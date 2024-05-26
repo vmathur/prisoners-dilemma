@@ -1,95 +1,99 @@
+'use client'
+
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useEffect, useState } from "react";
+import { useMagic } from "./context/MagicProvider";
+import { Magic } from "magic-sdk";
+import Web3 from "web3";
+import Profile from "./components/Profile";
+import OpenChallenges from "./components/OpenChallenges";
+import Players from "./components/Players";
 
 export default function Home() {
+  const { magic, web3 } = useMagic();
+  const [address, setAddress] = useState(0)
+  const [score, setScore] = useState(0)
+  const [players, setPlayers] = useState([])
+  const [openChallenges, setOpenChallenges] = useState([])
+
+  const handleLogin = async () => {
+    const isLoggedIn = await magic.user.isLoggedIn();
+    console.log('isLoggedIn?', isLoggedIn)
+    if (!isLoggedIn) {
+      let addresses = await magic.wallet.connectWithUI();
+      console.log('Logged in');
+      setAddress(addresses[0])
+      await registerPlayer(addresses[0])
+    }else{
+      let userInfo = await magic.user.getInfo();
+      console.log(userInfo)
+      let address = userInfo.publicAddress;
+      console.log(address)
+      setAddress(address)
+      await registerPlayer(address)
+    }
+  };
+
+useEffect(() => {
+  const fetchPlayers = async () => {
+    try {
+      const response = await fetch('/api/getUsers');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      const users = data.users.map(user => ({ address: user }));
+      setPlayers(users);
+    } catch (error) {
+      console.error('Failed to fetch players:', error);
+    }
+  };
+
+  fetchPlayers();
+}, []);
+
+  const registerPlayer = async (address) =>{
+      fetch('/api/registerUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address: address }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('User registered:', data);
+        // Optionally update state or handle response
+      })
+      .catch(error => {
+        console.error('Error registering user:', error);
+      });
+  }
+
+  useEffect(() => {
+    let challenge = {
+      player: '0x125fsd423d'
+    }
+
+    setOpenChallenges([...openChallenges, challenge])
+    let player = {
+      address: '0x125fsd423d'
+    }
+
+    setPlayers([...players, player])
+
+  }, [])
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <div><button onClick={handleLogin}>Login</button></div>
+      <h2>You</h2>
+      <Profile address={address} score={score} />
+      <h2>Respond</h2>
+      <OpenChallenges challenges={openChallenges} />
+      <h2>Challenge someone</h2>
+      <Players players={players} />
     </main>
   );
 }
