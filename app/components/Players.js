@@ -45,17 +45,16 @@ const Players = ({ address, players }) => {
       textAlign: 'center',
       alignContent: 'center'
     },
-};
-  
+  };
 
   return (
-    <div>
-      <h2>all players</h2>
+    <div className={styles.playersContainer}>
+      <h2 className={styles.playersHeading}>all players</h2>
       <div className={styles.playerslist}>
         {players
           .filter(player => player.address !== address)
           .map((player, index) => (
-            <div key={index}>
+            <div key={index} className={styles.playerCard}>
               <Avatar
                 size={40}
                 name={player.address}
@@ -70,8 +69,8 @@ const Players = ({ address, players }) => {
       <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>
         <h2>choose your move</h2>
         <div className={styles.buttonContainer}>
-          <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
-          <button className={styles.button} onClick={() => handleChoice('defect')}>Defect</button>
+          <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate 🤝</button>
+          <button className={styles.button} onClick={() => handleChoice('defect')}>Defect 😈</button>
         </div>
       </Modal>
     </div>

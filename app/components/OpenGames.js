@@ -46,11 +46,11 @@ const OpenChallenges = ({ address, challenges }) => {
     };
   
     return (
-        <div>
-            <h2>you've been challenged</h2>
+        <div className={styles.openGamesContainer}>
+            <h2 className={styles.openGamesHeading}>challenges</h2>
             <div>
                 {challenges.map((challenge, index) => (
-                    <div key={index}>
+                    <div key={index} className={styles.openGameCard}>
                         <Avatar
                             size={40}
                             name={challenge.player1}
@@ -65,8 +65,8 @@ const OpenChallenges = ({ address, challenges }) => {
             <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>
                 <h2>what will you do?</h2>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
-                    <button className={styles.button} onClick={() => handleChoice('defect')}>Defect</button>
+                    <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate 🤝</button>
+                    <button className={styles.button} onClick={() => handleChoice('defect')}>Defect 😈</button>
                 </div>
             </Modal>
         </div>

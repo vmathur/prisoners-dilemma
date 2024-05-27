@@ -295,3 +295,62 @@
   height: 50%;
 }
 
+.playersHeading{
+  padding: 10px
+}
+
+.openGamesContainer {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.openGamesHeading{
+  padding-bottom: 10px
+}
+
+
+.openGameCard {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.playerslist {
+  /* display: flex; */
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.playerCard {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.playerAddress {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
