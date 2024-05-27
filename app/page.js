@@ -9,9 +9,9 @@ import Profile from "./components/Profile";
 import OpenGames from "./components/OpenGames";
 import Players from "./components/Players";
 
-
 export default function Home() {
   const { magic, web3 } = useMagic();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [address, setAddress] = useState(null)
   const [score, setScore] = useState(0)
   const [players, setPlayers] = useState([])
@@ -20,6 +20,7 @@ export default function Home() {
 
   const handleLogin = async () => {
     const isLoggedIn = await magic.user.isLoggedIn();
+    setIsLoggedIn(isLoggedIn);
     if (!isLoggedIn) {
       let addresses = await magic.wallet.connectWithUI();
       setAddress(addresses[0])
@@ -31,6 +32,12 @@ export default function Home() {
       await registerPlayer(address)
     }
   };
+
+  const handleLogout = async () => {
+    await magic.user.logout();
+    setIsLoggedIn(false);
+  };
+
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -97,10 +104,34 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <div><button onClick={handleLogin}>Login</button></div>      
-      {address ? <Profile address={address} score={score} /> : <div>Please login</div>}
-      {address ? <OpenGames address={address} challenges={openGames} /> : ''}
-      <Players players={players} address={address}/>
+      
+      <div className={styles.loginSection}>
+        {!isLoggedIn ? (
+          <div>
+            <button className={styles.button} onClick={handleLogin}>Connect</button>
+          </div>
+        ) : (
+          <div>
+            <button className={`${styles.button} ${styles.disconnectButton}`} onClick={handleLogout}>Disconnect</button>
+          </div>
+        )}
+      </div>
+      
+      <span className={styles.profileSection}>
+        {address ? <Profile address={address} score={score} /> : ''}
+      </span>
+      
+      <div className={styles.openGamesSection}>
+        {address && openGames.length > 0 ? <OpenGames address={address} challenges={openGames} /> : ''}
+      </div>
+      
+      <div className={styles.playersSection}>
+        <Players players={players} address={address} />
+      </div>
+      
+      <div className={styles.contractLinkSection}>
+        <u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}`} target="_blank" rel="noopener noreferrer">View contract</a></i></u>
+      </div>
     </main>
   );
 }

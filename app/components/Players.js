@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { useMagic } from '../context/MagicProvider.js';
-import {abi, contractAddress} from '../contracts/index.js'
+import { abi, contractAddress } from '../contracts/index.js';
+import styles from '../page.module.css'; // Import the styles
 
 const Players = ({ address, players }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -25,28 +26,29 @@ const Players = ({ address, players }) => {
       let move = choice === 'cooperate' ? true : false;
       const contract = new web3.eth.Contract(abi, contractAddress);
       const response = await contract.methods.challenge(selectedPlayer, move).send({ from: address });
-      console.log(response)
+      console.log(response);
       closeModal();
     }
   };
+  
 
   return (
     <div>
-      <h2>Players</h2>
+      <h2>All players</h2>
       <ul>
         {players
           .filter(player => player.address !== address)
           .map((player, index) => (
-            <li key={index}>
+            <div key={index}>
               ...{player.address.slice(-4)}
-              {address ? <button onClick={() => openModal(player.address)}>Challenge</button> : null}
-            </li>
+              {address ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
+            </div>
           ))}
       </ul>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
         <h2>Choose your move</h2>
-        <button onClick={() => handleChoice('cooperate')}>Cooperate</button>
-        <button onClick={() => handleChoice('defect')}>Defect</button>
+        <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
+        <button className={styles.button} onClick={() => handleChoice('defect')}>Defect</button>
       </Modal>
     </div>
   );

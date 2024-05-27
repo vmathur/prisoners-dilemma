@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { useMagic } from '../context/MagicProvider.js';
 import {abi, contractAddress} from '../contracts/index.js'
+import styles from '../page.module.css'; // Import the styles
 
 const OpenChallenges = ({ address, challenges }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -32,16 +33,16 @@ const OpenChallenges = ({ address, challenges }) => {
   
     return (
         <div>
-            <h2>Open challenges</h2>
-            <ul>
+            <h2>You've been challenged</h2>
+            <div>
                 {challenges.map((challenge, index) => (
-                    <li key={index}>Challenged by ...{challenge.player1.slice(-4)}<button onClick={() => openModal(challenge.player1)}>Accept</button></li>
+                    <div key={index}>Challenged by ...{challenge.player1.slice(-4)}<button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button></div>
                 ))}
-            </ul>
+            </div>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
                 <h2>Choose your move</h2>
-                <button onClick={() => handleChoice('cooperate')}>Cooperate</button>
-                <button onClick={() => handleChoice('defect')}>Defect</button>
+                <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
+                <button className={styles.button} onClick={() => handleChoice('defect')}>Defect</button>
             </Modal>
         </div>
     );

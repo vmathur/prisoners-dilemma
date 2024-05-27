@@ -1,7 +1,7 @@
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
@@ -227,4 +227,31 @@
   to {
     transform: rotate(0deg);
   }
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #0070f3;
+  margin-left: 10px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.button:hover {
+  background-color: #005bb5;
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.disconnectButton {
+  background-color: gray;
+}
+
+.disconnectButton:hover {
+  background-color: darkgray;
 }
