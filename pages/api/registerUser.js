@@ -5,13 +5,13 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         try {
             const { address } = req.body;
-            const existingAddresses = await kv.get('user_addresses') || [];
-            if (!existingAddresses.includes(address)) {
-                existingAddresses.push(address);
-                await kv.set('user_addresses', existingAddresses);
+            const users = await kv.lrange('users', 0, -1);
+            if (!users.includes(address)) {
+                users.push(address);
+                await kv.lpush('users', address);
                 res.status(200).json({ message: 'User registered successfully', address: address });
             } else {
-                res.status(400).json({ message: 'User address already exists' });
+                res.status(200).json({ message: 'User address already exists' });
             }
 
         } catch (error) {

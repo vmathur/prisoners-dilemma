@@ -1,4 +1,46 @@
-export const abi = [
+export const contractAbi = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_player1",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "_move",
+				"type": "bool"
+			}
+		],
+		"name": "accept",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_player2",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "_move",
+				"type": "bool"
+			}
+		],
+		"name": "challenge",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"anonymous": false,
 		"inputs": [
@@ -47,55 +89,19 @@ export const abi = [
 			},
 			{
 				"indexed": false,
-				"internalType": "bool",
-				"name": "result",
-				"type": "bool"
+				"internalType": "int256",
+				"name": "player1ScoreDiff",
+				"type": "int256"
+			},
+			{
+				"indexed": false,
+				"internalType": "int256",
+				"name": "player2ScoreDiff",
+				"type": "int256"
 			}
 		],
 		"name": "GameCompleted",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_player1",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "_move",
-				"type": "bool"
-			}
-		],
-		"name": "accept",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_player2",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "_move",
-				"type": "bool"
-			}
-		],
-		"name": "challenge",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -150,6 +156,72 @@ export const abi = [
 				"internalType": "bool",
 				"name": "gameCompleted",
 				"type": "bool"
+			},
+			{
+				"internalType": "int256",
+				"name": "player1ScoreDiff",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "player2ScoreDiff",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "player",
+				"type": "address"
+			}
+		],
+		"name": "getAllGamesForAddress",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "player1",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "player2",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "player1Move",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "player2Move",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "gameCompleted",
+						"type": "bool"
+					},
+					{
+						"internalType": "int256",
+						"name": "player1ScoreDiff",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "player2ScoreDiff",
+						"type": "int256"
+					}
+				],
+				"internalType": "struct Dilemma.Game[]",
+				"name": "",
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
@@ -201,11 +273,45 @@ export const abi = [
 						"internalType": "bool",
 						"name": "gameCompleted",
 						"type": "bool"
+					},
+					{
+						"internalType": "int256",
+						"name": "player1ScoreDiff",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "player2ScoreDiff",
+						"type": "int256"
 					}
 				],
 				"internalType": "struct Dilemma.Game",
 				"name": "",
 				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "playerGames",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
 			}
 		],
 		"stateMutability": "view",

@@ -14,14 +14,16 @@ contract Dilemma {
         bool player1Move;
         bool player2Move;
         bool gameCompleted;
+        int player1ScoreDiff;
+        int player2ScoreDiff;
     }
 
     mapping(bytes32 => Game) public games;
     mapping(bytes32 => uint256) public gameCounters;
+    mapping(address => bytes32[]) public playerGames; // New mapping to track game IDs by player
 
     event GameChallenged(address indexed player1, address indexed player2, bytes32 gameId);
-    event GameCompleted(address indexed player2, address indexed player1, bytes32 gameId, bool result);
-
+    event GameCompleted(address indexed player2, address indexed player1, bytes32 gameId, int player1ScoreDiff, int player2ScoreDiff);
     function computePairId(address _player1, address _player2) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked(_player1, _player2));
     }
@@ -50,13 +52,18 @@ contract Dilemma {
             player2: _player2,
             player1Move: _move,
             player2Move: false,
-            gameCompleted: false
+            gameCompleted: false,
+            player1ScoreDiff: 0,
+            player2ScoreDiff: 0
         });
+
+        playerGames[msg.sender].push(gameId);
+        playerGames[_player2].push(gameId);
 
         emit GameChallenged(msg.sender, _player2, gameId);
     }
 
-    function accept(address _player1, bool _move) external returns (bool) {
+    function accept(address _player1, bool _move) external returns (int) {
         bytes32 pairId = computePairId(_player1, msg.sender);
         uint256 counter = gameCounters[pairId];
 
@@ -68,16 +75,44 @@ contract Dilemma {
         require(!game.gameCompleted, "Game already completed");
 
         game.player2Move = _move;
-        bool result = game.player1Move && _move;
+    
+
+        if (game.player1Move && _move) {
+            game.player1ScoreDiff = 1;
+            game.player2ScoreDiff = 1;
+        } else if (game.player1Move && !_move) {
+            game.player1ScoreDiff = -1;
+            game.player2ScoreDiff = 1;
+        } else if (!game.player1Move && _move) {
+            game.player1ScoreDiff = 1;
+            game.player2ScoreDiff = -1;
+        } else {
+            game.player1ScoreDiff = 0;
+            game.player2ScoreDiff = 0;
+
+        }
+
         game.gameCompleted = true;
 
-        emit GameCompleted(msg.sender, _player1, gameId, result);
+        emit GameCompleted(msg.sender, _player1, gameId, game.player1ScoreDiff, game.player2ScoreDiff);
 
-        return result;
+        return game.player2ScoreDiff;
     }
 
     function getGame(address _player1, address _player2, uint256 counter) external view returns (Game memory) {
         bytes32 gameId = computeGameId(_player1, _player2, counter);
         return games[gameId];
+    }
+
+    function getAllGamesForAddress(address player) external view returns (Game[] memory) {
+        bytes32[] memory gameIds = playerGames[player];
+        uint256 totalGames = gameIds.length;
+
+        Game[] memory allGames = new Game[](totalGames);
+        for (uint256 i = 0; i < totalGames; i++) {
+            allGames[i] = games[gameIds[i]];
+        }
+
+        return allGames;
     }
 }
