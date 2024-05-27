@@ -4,6 +4,19 @@
   height: 100vh;
 }
 
+.profileContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .headerSection {
   display: flex;
   justify-content: space-between;

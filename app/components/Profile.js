@@ -7,7 +7,7 @@ const Profile = ({ address, score }) => {
   const colors = generateColors(address);
 
   return (
-    <div>
+    <div className={styles.profileContainer}>
       <Avatar
         size={40}
         name={address}
@@ -15,7 +15,7 @@ const Profile = ({ address, score }) => {
         colors={colors}
       />
       <span className={styles.playerAddress}>...{address.slice(-8)}   </span>
-      <span>: <b>{score} points</b></span>
+      <span>&nbsp;&nbsp;{score} points</span>
     </div>
   );
 };
