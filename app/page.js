@@ -26,6 +26,7 @@ export default function Home() {
     if (!isLoggedIn) {
       let addresses = await magic.wallet.connectWithUI();
       setAddress(addresses[0])
+      setIsLoggedIn(true)
       await registerPlayer(addresses[0])
     }else{
       let userInfo = await magic.user.getInfo();
@@ -38,6 +39,10 @@ export default function Home() {
   const handleLogout = async () => {
     await magic.user.logout();
     setIsLoggedIn(false);
+    setOpenGames([])
+    setClosedGames([])
+    setScore(0)
+    setAddress(null)
   };
 
 
@@ -105,8 +110,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      
-      <div className={styles.header}>
+      <div className={styles.headerSection}>
         <span className={styles.profileSection}>
           {address ? <Profile address={address} score={score} /> : ''}
         </span>
@@ -120,30 +124,17 @@ export default function Home() {
           </span>
         )}
       </div>
-      {/* {isLoggedIn && (
-        <div className={styles.historyLinkSection}>
-          <u>
-            <i>
-              <Link 
-                href={{
-                pathname: '/history',
-                query: { address: address },
-              }}>
-                View History
-              </Link>
-            </i>
-          </u>
-        </div>
-      )} */}
 
-      <div className={styles.openGamesSection}>
-        {address && openGames.length > 0 ? <OpenGames address={address} challenges={openGames} /> : ''}
+      <div className={styles.middleSection}>
+        <div className={styles.openGamesSection}>
+          {address && openGames.length > 0 ? <OpenGames address={address} challenges={openGames} /> : ''}
+        </div>
+        
+        <div className={styles.playersSection}>
+          <Players players={players} address={address} />
+        </div>
       </div>
-      
-      <div className={styles.playersSection}>
-        <Players players={players} address={address} />
-      </div>
-      
+
       <div className={styles.contractLinkSection}>
         <u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}`} target="_blank" rel="noopener noreferrer">View contract</a></i></u>
       </div>
