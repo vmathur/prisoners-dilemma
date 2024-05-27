@@ -136,7 +136,7 @@ export default function Home() {
       </div>
 
       <div className={styles.contractLinkSection}>
-        <u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}`} target="_blank" rel="noopener noreferrer">View contract</a></i></u>
+        <u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}#code`} target="_blank" rel="noopener noreferrer">View contract</a></i></u>
       </div>
     </main>
   );

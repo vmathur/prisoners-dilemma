@@ -5,6 +5,7 @@ import { useMagic } from '../context/MagicProvider.js';
 import {abi, contractAddress} from '../contracts/index.js'
 import styles from '../page.module.css'; // Import the styles
 import { generateColors } from '../utils/utils';
+import '../page.module.css';
 
 const colors = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
 
@@ -34,6 +35,15 @@ const OpenChallenges = ({ address, challenges }) => {
           closeModal();
         }
     };
+    const customStyles = {
+        content: {
+          height: '50%',
+          width: '50%',
+          placeSelf: 'center',
+          textAlign: 'center',
+          alignContent: 'center'
+        },
+    };
   
     return (
         <div>
@@ -52,10 +62,12 @@ const OpenChallenges = ({ address, challenges }) => {
                     </div>
                 ))}
             </div>
-            <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-                <h2>Choose your move</h2>
-                <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
-                <button className={styles.button} onClick={() => handleChoice('defect')}>Defect</button>
+            <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>
+                <h2>what will you do?</h2>
+                <div className={styles.buttonContainer}>
+                    <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
+                    <button className={styles.button} onClick={() => handleChoice('defect')}>Defect</button>
+                </div>
             </Modal>
         </div>
     );
