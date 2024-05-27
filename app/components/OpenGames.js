@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import Avatar from 'boring-avatars';
 import { useMagic } from '../context/MagicProvider.js';
 import {abi, contractAddress} from '../contracts/index.js'
 import styles from '../page.module.css'; // Import the styles
+import { generateColors } from '../utils/utils';
+
+const colors = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
 
 const OpenChallenges = ({ address, challenges }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -33,10 +37,19 @@ const OpenChallenges = ({ address, challenges }) => {
   
     return (
         <div>
-            <h2>You've been challenged</h2>
+            <h2>you've been challenged</h2>
             <div>
                 {challenges.map((challenge, index) => (
-                    <div key={index}>Challenged by ...{challenge.player1.slice(-4)}<button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button></div>
+                    <div key={index}>
+                        <Avatar
+                            size={40}
+                            name={challenge.player1}
+                            variant="beam"
+                            colors={generateColors(challenge.player1)}
+                        />
+                        <span className={styles.playerAddress}>...{challenge.player1.slice(-8)}</span>
+                        <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button>
+                    </div>
                 ))}
             </div>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>

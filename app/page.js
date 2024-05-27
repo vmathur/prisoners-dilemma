@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import styles from "./page.module.css";
+import Link from 'next/link'
+
 import { useEffect, useState } from "react";
 import { useMagic } from "./context/MagicProvider";
 import {abi, contractAddress} from './contracts/index.js'
@@ -95,7 +97,6 @@ export default function Home() {
       .then(response => response.json())
       .then(data => {
         // console.log('User registered:', data);
-        // Optionally update state or handle response
       })
       .catch(error => {
         console.error('Error registering user:', error);
@@ -105,22 +106,36 @@ export default function Home() {
   return (
     <main className={styles.main}>
       
-      <div className={styles.loginSection}>
+      <div className={styles.header}>
+        <span className={styles.profileSection}>
+          {address ? <Profile address={address} score={score} /> : ''}
+        </span>
         {!isLoggedIn ? (
-          <div>
+          <span>
             <button className={styles.button} onClick={handleLogin}>Connect</button>
-          </div>
+          </span>
         ) : (
-          <div>
+          <span>
             <button className={`${styles.button} ${styles.disconnectButton}`} onClick={handleLogout}>Disconnect</button>
-          </div>
+          </span>
         )}
       </div>
-      
-      <span className={styles.profileSection}>
-        {address ? <Profile address={address} score={score} /> : ''}
-      </span>
-      
+      {/* {isLoggedIn && (
+        <div className={styles.historyLinkSection}>
+          <u>
+            <i>
+              <Link 
+                href={{
+                pathname: '/history',
+                query: { address: address },
+              }}>
+                View History
+              </Link>
+            </i>
+          </u>
+        </div>
+      )} */}
+
       <div className={styles.openGamesSection}>
         {address && openGames.length > 0 ? <OpenGames address={address} challenges={openGames} /> : ''}
       </div>

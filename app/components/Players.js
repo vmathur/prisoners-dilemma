@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import Avatar from 'boring-avatars';
 import { useMagic } from '../context/MagicProvider.js';
 import { abi, contractAddress } from '../contracts/index.js';
 import styles from '../page.module.css'; // Import the styles
+import { generateColors } from '../utils/utils';
+
+
+const colors = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
 
 const Players = ({ address, players }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -34,17 +39,23 @@ const Players = ({ address, players }) => {
 
   return (
     <div>
-      <h2>All players</h2>
-      <ul>
+      <h2>all players</h2>
+      <div className={styles.playerslist}>
         {players
           .filter(player => player.address !== address)
           .map((player, index) => (
             <div key={index}>
-              ...{player.address.slice(-4)}
+              <Avatar
+                size={40}
+                name={player.address}
+                variant="beam"
+                colors={generateColors(player.address)}
+              />
+              <span className={styles.playerAddress}>...{player.address.slice(-8)}</span>
               {address ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
             </div>
           ))}
-      </ul>
+      </div>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
         <h2>Choose your move</h2>
         <button className={styles.button} onClick={() => handleChoice('cooperate')}>Cooperate</button>
