@@ -144,7 +144,8 @@ export default function Home() {
       </div>
 
       <div className={styles.contractLinkSection}>
-        <u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}#code`} target="_blank" rel="noopener noreferrer">View contract</a></i></u>
+        <div><u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}#code`} target="_blank" rel="noopener noreferrer">View contract</a></i></u></div>
+        <div><u><i><a href={`https://www.alchemy.com/faucets/base-sepolia`} target="_blank" rel="noopener noreferrer">Faucet</a></i></u></div>
       </div>
     </main>
   );
