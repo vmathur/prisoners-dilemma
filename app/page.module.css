@@ -368,6 +368,10 @@
   background-color: #0056b3;
 }
 
+.buttonDisabled{
+  background-color: gray;
+}
+
 .userAddress{
   margin-left: 10px;
   font-weight: bold;

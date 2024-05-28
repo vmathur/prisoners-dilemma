@@ -20,7 +20,8 @@ export default function Home() {
   const [score, setScore] = useState(0)
   const [players, setPlayers] = useState([])
   const [openGames, setOpenGames] = useState([])
-  const [closedGames, setClosedGames] = useState([])
+  const [yourChallengers, setYourChallengers] = useState([])
+  const [playersChallenged, setPlayersChallenged] = useState([])
 
   const handleLogin = async () => {
     const isLoggedIn = await magic.user.isLoggedIn();
@@ -42,7 +43,6 @@ export default function Home() {
     await magic.user.logout();
     setIsLoggedIn(false);
     setOpenGames([])
-    setClosedGames([])
     setScore(0)
     setAddress(null)
   };
@@ -68,12 +68,28 @@ export default function Home() {
         if (!web3 || !address) return;
         const games = await getGamesForAddress(web3, address)
 
-        const filteredOpenGames = games.filter(game => !game.gameCompleted);
+        const filteredIncomplete = games.filter(game => !game.gameCompleted);
+        setOpenGames(filteredIncomplete);
+        
+        const yourChallengers = []
+        const filteredOpenGames = filteredIncomplete.filter(game => game.player1 !== address);
+        filteredOpenGames && filteredOpenGames.forEach(game => {
+          yourChallengers.push(game.player1)
+        })
+        setYourChallengers(yourChallengers)
+
+        const playersChallenged = []
+        filteredIncomplete && filteredIncomplete.forEach(game => {
+          if(game.player1===address){
+            playersChallenged.push(game.player2)
+          }
+        })
+        setPlayersChallenged(playersChallenged)
+
         const filteredCompletedGames = games.filter(game =>game.gameCompleted);
         let totalScore = computeScore(filteredCompletedGames, address)
         setScore(totalScore);
-        setOpenGames(filteredOpenGames);
-        setClosedGames(filteredCompletedGames);
+  
       } catch (error) {
         console.error('Failed to fetch open challenges:', error);
       }
@@ -119,11 +135,11 @@ export default function Home() {
 
       <div className={styles.middleSection}>
         <div className={styles.openGamesSection}>
-          {address && openGames.length > 0 ? <OpenGames address={address} challenges={openGames} /> : ''}
+          {address && openGames.length > 0 ? <OpenGames address={address} challenges={openGames}/> : ''}
         </div>
         
         <div className={styles.playersSection}>
-          <Players players={players} address={address} />
+          <Players players={players} address={address} yourChallengers={yourChallengers} playersChallenged={playersChallenged}/>
         </div>
       </div>
 

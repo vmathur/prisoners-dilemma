@@ -11,7 +11,7 @@ import '../page.module.css';
 
 const colors = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
 
-const Players = ({ address, players }) => {
+const Players = ({ address, players, yourChallengers, playersChallenged }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const { web3 } = useMagic();
@@ -73,7 +73,7 @@ const Players = ({ address, players }) => {
                 }}>
                 <span className={styles.playerAddress}>...{player.address.slice(-8)}</span>
                  </Link>
-                {address ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
+                {address && !yourChallengers.includes(player.address) && !playersChallenged.includes(player.address) ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
               </div>
           ))}
       </div>

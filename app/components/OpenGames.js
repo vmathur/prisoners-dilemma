@@ -69,7 +69,9 @@ const OpenChallenges = ({ address, challenges }) => {
                         }}>
                         <span className={styles.playerAddress}>...{challenge.player1.slice(-8)}</span>
                         </Link>
-                        <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button>
+                        {challenge.player1 === address ? <button className={`${styles.button} ${styles.buttonDisabled}`} disabled={true}>Waiting...</button> : null}
+                        {challenge.player2 === address ? <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button> : null}
+
                     </div>
                 ))}
             </div>
