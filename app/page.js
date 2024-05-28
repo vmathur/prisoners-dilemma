@@ -6,10 +6,12 @@ import Link from 'next/link'
 
 import { useEffect, useState } from "react";
 import { useMagic } from "./context/MagicProvider";
-import {abi, contractAddress} from './contracts/index.js'
+import {contractAddress} from './contracts/index.js'
+import { getGamesForAddress } from './contracts/contractMethods'
 import Profile from "./components/Profile";
 import OpenGames from "./components/OpenGames";
 import Players from "./components/Players";
+import { computeScore } from "./utils/utils";
 
 export default function Home() {
   const { magic, web3 } = useMagic();
@@ -64,21 +66,11 @@ export default function Home() {
     const fetchGames = async () => {
       try {
         if (!web3 || !address) return;
-        const contract = new web3.eth.Contract(abi, contractAddress);
-        const games = await contract.methods.getAllGamesForAddress(address).call();
+        const games = await getGamesForAddress(web3, address)
+
         const filteredOpenGames = games.filter(game => !game.gameCompleted);
         const filteredCompletedGames = games.filter(game =>game.gameCompleted);
-        console.log(filteredOpenGames)
-        console.log(filteredCompletedGames)
-        
-        let totalScore = 0;
-        filteredCompletedGames.forEach(game => {
-          if (game.player1 === address) {
-            totalScore += Number(game.player1ScoreDiff);
-          } else if (game.player2 === address) {
-            totalScore += Number(game.player2ScoreDiff);
-          }
-        });
+        let totalScore = computeScore(filteredCompletedGames, address)
         setScore(totalScore);
         setOpenGames(filteredOpenGames);
         setClosedGames(filteredCompletedGames);

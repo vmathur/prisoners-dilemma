@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Modal from 'react-modal';
 import Avatar from 'boring-avatars';
 import { useMagic } from '../context/MagicProvider.js';
@@ -54,16 +55,21 @@ const Players = ({ address, players }) => {
         {players
           .filter(player => player.address !== address)
           .map((player, index) => (
-            <div key={index} className={styles.playerCard}>
-              <Avatar
-                size={40}
-                name={player.address}
-                variant="beam"
-                colors={generateColors(player.address)}
-              />
-              <span className={styles.playerAddress}>...{player.address.slice(-8)}</span>
-              {address ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
-            </div>
+            <Link href={{
+              pathname:"/user",
+              query: { address: player.address }
+            }}>
+              <div key={index} className={styles.playerCard}>
+                <Avatar
+                  size={40}
+                  name={player.address}
+                  variant="beam"
+                  colors={generateColors(player.address)}
+                />
+                <span className={styles.playerAddress}>...{player.address.slice(-8)}</span>
+                {address ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
+              </div>
+            </Link>
           ))}
       </div>
       <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>

@@ -9,4 +9,16 @@ export const generateColors = (address) => {
     }
     return colors;
 };
-  
+
+export const computeScore = (filteredCompletedGames, address) => {
+  let totalScore = 0;
+  filteredCompletedGames.forEach(game => {
+    if (game.player1 === address) {
+      totalScore += Number(game.player1ScoreDiff);
+    } else if (game.player2 === address) {
+      totalScore += Number(game.player2ScoreDiff);
+    }
+  });
+  return totalScore;
+}
+

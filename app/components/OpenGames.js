@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Modal from 'react-modal';
 import Avatar from 'boring-avatars';
 import { useMagic } from '../context/MagicProvider.js';
@@ -50,6 +51,10 @@ const OpenChallenges = ({ address, challenges }) => {
             <h2 className={styles.openGamesHeading}>challenges</h2>
             <div>
                 {challenges.map((challenge, index) => (
+                    <Link href={{
+                        pathname:"/user",
+                        query: { address: challenge.player1 }
+                    }}>
                     <div key={index} className={styles.openGameCard}>
                         <Avatar
                             size={40}
@@ -60,6 +65,7 @@ const OpenChallenges = ({ address, challenges }) => {
                         <span className={styles.playerAddress}>...{challenge.player1.slice(-8)}</span>
                         <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button>
                     </div>
+                    </Link>
                 ))}
             </div>
             <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>

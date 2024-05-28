@@ -30,7 +30,6 @@ const MagicProvider = ({ children }) => {
       })
 
       setMagic(magic)
-      console.log('setting web3')
       setWeb3(new Web3(magic.rpcProvider))
     } else {
       console.error("NEXT_PUBLIC_MAGIC_API_KEY is not set")
