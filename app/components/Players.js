@@ -55,21 +55,26 @@ const Players = ({ address, players }) => {
         {players
           .filter(player => player.address !== address)
           .map((player, index) => (
-            <Link href={{
-              pathname:"/user",
-              query: { address: player.address }
-            }}>
-              <div key={index} className={styles.playerCard}>
+            <div key={index} className={styles.playerCard}>
+                <Link href={{
+                  pathname:"/user",
+                  query: { address: player.address }
+                }}>
                 <Avatar
                   size={40}
                   name={player.address}
                   variant="beam"
                   colors={generateColors(player.address)}
                 />
+                </Link>
+                <Link href={{
+                  pathname:"/user",
+                  query: { address: player.address }
+                }}>
                 <span className={styles.playerAddress}>...{player.address.slice(-8)}</span>
+                 </Link>
                 {address ? <button className={styles.button} onClick={() => openModal(player.address)}>Challenge</button> : null}
               </div>
-            </Link>
           ))}
       </div>
       <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>

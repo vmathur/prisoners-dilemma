@@ -51,21 +51,26 @@ const OpenChallenges = ({ address, challenges }) => {
             <h2 className={styles.openGamesHeading}>challenges</h2>
             <div>
                 {challenges.map((challenge, index) => (
-                    <Link href={{
-                        pathname:"/user",
-                        query: { address: challenge.player1 }
-                    }}>
                     <div key={index} className={styles.openGameCard}>
+                        <Link href={{
+                            pathname:"/user",
+                            query: { address: challenge.player1 }
+                        }}>
                         <Avatar
                             size={40}
                             name={challenge.player1}
                             variant="beam"
                             colors={generateColors(challenge.player1)}
                         />
+                        </Link>
+                        <Link href={{
+                            pathname:"/user",
+                            query: { address: challenge.player1 }
+                        }}>
                         <span className={styles.playerAddress}>...{challenge.player1.slice(-8)}</span>
+                        </Link>
                         <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button>
                     </div>
-                    </Link>
                 ))}
             </div>
             <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={closeModal}>
