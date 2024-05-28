@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState } from 'react';
 import GameHistory from '../components/GameHistory'
 import Avatar from 'boring-avatars';
 import styles from '../page.module.css';
@@ -32,7 +32,6 @@ const User = () => {
   }, [web3]);
 
   return (
-    <Suspense>
       <div>
         <div className={styles.userContainer}>
           <div className={styles.profileContainer}>
@@ -50,7 +49,6 @@ const User = () => {
           </div>
         </div>
       </div>
-    </Suspense>
   );
 };
 
