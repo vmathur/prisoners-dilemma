@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react"
+const { FhenixClient } = require("fhenixjs");
 const { Web3 } = require("web3")
 
 const MagicContext = createContext({
@@ -19,18 +20,22 @@ export const useMagic = () => useContext(MagicContext)
 const MagicProvider = ({ children }) => {
   const [magic, setMagic] = useState(null)
   const [web3, setWeb3] = useState(null)
+  const [fhenixClient, setFhenixClient] = useState(null)
 
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_MAGIC_API_KEY) {
       const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_API_KEY || "", {
         network: {
-            rpcUrl: 'https://sepolia.base.org',
-            chainId: 84532,
+            rpcUrl: 'https://api.testnet.fhenix.zone',
+            chainId: 42069,
         },
       })
-
       setMagic(magic)
-      setWeb3(new Web3(magic.rpcProvider))
+      let web3 = new Web3(magic.rpcProvider)
+      setWeb3(web3)
+      // const provider = web3.provider;
+      // const fhenixClient = new FhenixClient({provider});
+      // setFhenixClient(fhenixClient)
     } else {
       console.error("NEXT_PUBLIC_MAGIC_API_KEY is not set")
     }

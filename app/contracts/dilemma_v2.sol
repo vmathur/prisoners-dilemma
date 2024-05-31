@@ -2,17 +2,20 @@
 
 pragma solidity >=0.8.2 <0.9.0;
 import "@fhenixprotocol/contracts/FHE.sol";
+
 /**
  * @title Storage
  * @dev Store & retrieve value in a variable
  * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
  */
-contract Dilemma {
+contract Dilemma_v2 {
     struct Game {
         address player1;
         address player2;
-        bool player1Move;
-        bool player2Move;
+        ebool player1Move;
+        ebool player2Move;
+        bool plainTextPlayer1Move;
+        bool plainTextPlayer2Move; 
         bool gameCompleted;
         int player1ScoreDiff;
         int player2ScoreDiff;
@@ -32,7 +35,7 @@ contract Dilemma {
         return keccak256(abi.encodePacked(_player1, _player2, counter));
     }
 
-    function challenge(address _player2, bool _move) external {
+    function challenge(address _player2, inEbool calldata _encryptedMove) external {
         require(_player2 != msg.sender, "You cannot challenge yourself");
 
         bytes32 pairId = computePairId(msg.sender, _player2);
@@ -47,11 +50,17 @@ contract Dilemma {
         gameCounters[pairId]++;
         gameId = computeGameId(msg.sender, _player2, gameCounters[pairId]);
 
+        ebool tempPlayer2Move = FHE.asEbool(false);
+        ebool encryptedPlayer1Move = FHE.asEbool(_encryptedMove);
+        
+
         games[gameId] = Game({
             player1: msg.sender,
             player2: _player2,
-            player1Move: _move,
-            player2Move: false,
+            player1Move: encryptedPlayer1Move,
+            player2Move: tempPlayer2Move,
+            plainTextPlayer1Move: false,
+            plainTextPlayer2Move: false, 
             gameCompleted: false,
             player1ScoreDiff: 0,
             player2ScoreDiff: 0
@@ -63,7 +72,7 @@ contract Dilemma {
         emit GameChallenged(msg.sender, _player2, gameId);
     }
 
-    function accept(address _player1, bool _move) external returns (int) {
+    function accept(address _player1, inEbool calldata _encryptedMove) external returns (int) {
         bytes32 pairId = computePairId(_player1, msg.sender);
         uint256 counter = gameCounters[pairId];
 
@@ -74,23 +83,28 @@ contract Dilemma {
         require(game.player2 == msg.sender, "You are not the challenged player");
         require(!game.gameCompleted, "Game already completed");
 
-        game.player2Move = _move;
-    
+        ebool player2move = FHE.asEbool(_encryptedMove);
+        game.player2Move = player2move;
 
-        if (game.player1Move && _move) {
-            game.player1ScoreDiff = 1;
+        bool plainTextPlayer1Move = FHE.decrypt(game.player1Move);
+        game.plainTextPlayer1Move = plainTextPlayer1Move;
+        bool plainTextPlayer2Move = FHE.decrypt(game.player2Move);
+        game.plainTextPlayer2Move = plainTextPlayer2Move;
+
+        if (game.plainTextPlayer1Move && plainTextPlayer2Move) {
+            game.player1ScoreDiff = 2;
+            game.player2ScoreDiff = 2;
+        } else if (plainTextPlayer1Move && !plainTextPlayer2Move) {
+            game.player1ScoreDiff = 0;
             game.player2ScoreDiff = 1;
-        } else if (game.player1Move && !_move) {
-            game.player1ScoreDiff = -1;
-            game.player2ScoreDiff = 1;
-        } else if (!game.player1Move && _move) {
+        } else if (!plainTextPlayer1Move && plainTextPlayer2Move) {
             game.player1ScoreDiff = 1;
-            game.player2ScoreDiff = -1;
+            game.player2ScoreDiff = 0;
         } else {
             game.player1ScoreDiff = 0;
             game.player2ScoreDiff = 0;
-
         }
+
 
         game.gameCompleted = true;
 
