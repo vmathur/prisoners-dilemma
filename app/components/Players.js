@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Modal from 'react-modal';
 import Avatar from 'boring-avatars';
@@ -7,14 +7,12 @@ import { abi, contractAddress } from '../contracts/index.js';
 import styles from '../page.module.css'; // Import the styles
 import { generateColors } from '../utils/utils';
 import '../page.module.css';
-
-
-const colors = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
+import { EncryptionTypes } from "fhenixjs"
 
 const Players = ({ address, players, yourChallengers, playersChallenged }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const { web3 } = useMagic();
+  const { web3, fhenixClient } = useMagic();
 
   const openModal = (playerAddress) => {
     setSelectedPlayer(playerAddress);
@@ -37,6 +35,22 @@ const Players = ({ address, players, yourChallengers, playersChallenged }) => {
       closeModal();
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(!fhenixClient) return
+      console.log('encrypting')
+      console.log(EncryptionTypes.bool)
+      try{
+        const encryptedBool = await fhenixClient.encrypt(8)
+        console.log(encryptedBool)
+      }catch(e){
+        console.log(e)
+      }
+    };
+
+    fetchData();
+  }, [fhenixClient, address]);
 
   const customStyles = {
     content: {
