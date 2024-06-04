@@ -7,7 +7,6 @@ import { abi, contractAddress } from '../contracts/index.js';
 import styles from '../page.module.css'; // Import the styles
 import { generateColors } from '../utils/utils';
 import '../page.module.css';
-import { EncryptionTypes } from "fhenixjs"
 
 const Players = ({ address, players, yourChallengers, playersChallenged }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -28,29 +27,18 @@ const Players = ({ address, players, yourChallengers, playersChallenged }) => {
     if (selectedPlayer) {
       console.log(`Challenge started with address: ${selectedPlayer} and choice: ${choice}`);
       if (!web3) return;
-      let move = choice === 'cooperate' ? true : false;
-      const contract = new web3.eth.Contract(abi, contractAddress);
-      const response = await contract.methods.challenge(selectedPlayer, move).send({ from: address });
-      console.log(response);
-      closeModal();
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if(!fhenixClient) return
-      console.log('encrypting')
-      console.log(EncryptionTypes.bool)
       try{
-        const encryptedBool = await fhenixClient.encrypt(8)
-        console.log(encryptedBool)
+        let move = choice === 'cooperate' ? true : false;
+        const contract = new web3.eth.Contract(abi, contractAddress);
+        const encryptedMove = await fhenixClient.encrypt_bool(move) //todo encrypt the move
+        const response = await contract.methods.challenge(selectedPlayer, encryptedMove).send({ from: address });
+        console.log(response);
       }catch(e){
         console.log(e)
       }
-    };
-
-    fetchData();
-  }, [fhenixClient, address]);
+      closeModal();
+    }
+  };
 
   const customStyles = {
     content: {
@@ -61,6 +49,10 @@ const Players = ({ address, players, yourChallengers, playersChallenged }) => {
       alignContent: 'center'
     },
   };
+
+  if(!fhenixClient){
+    return 'Loading...'
+  }
 
   return (
     <div className={styles.playersContainer}>

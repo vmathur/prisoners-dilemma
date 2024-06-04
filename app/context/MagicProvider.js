@@ -8,7 +8,6 @@ import {
   useState,
 } from "react"
 import { FhenixClient } from "fhenixjs"
-import { ethers } from "ethers";
 const { Web3 } = require("web3")
 
 const MagicContext = createContext({
@@ -29,7 +28,7 @@ const MagicProvider = ({ children }) => {
       const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_API_KEY || "", {
         network: {
             rpcUrl: 'https://api.helium.fhenix.zone/',
-            chainId: 42069,
+            chainId: 8008135,
         },
       })
       setMagic(magic)
