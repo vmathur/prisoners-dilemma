@@ -1,8 +1,6 @@
 'use client'
 
-import Image from "next/image";
 import styles from "./page.module.css";
-import Link from 'next/link'
 
 import { useEffect, useState } from "react";
 import { useMagic } from "./context/MagicProvider";
@@ -46,6 +44,20 @@ export default function Home() {
     setScore(0)
     setAddress(null)
   };
+
+  useEffect(()=>{
+    const checkIfLoggedIn = async () =>{
+      if(!magic) return;
+      const isLoggedIn = await magic.user.isLoggedIn();
+      setIsLoggedIn(isLoggedIn);
+      if(isLoggedIn){
+        let userInfo = await magic.user.getInfo();
+        let address = userInfo.publicAddress;
+        setAddress(address)
+      }
+    }
+    checkIfLoggedIn();
+  }, [magic])
 
 
   useEffect(() => {
@@ -144,8 +156,8 @@ export default function Home() {
       </div>
 
       <div className={styles.contractLinkSection}>
-        <div><u><i><a href={`https://sepolia.basescan.org/address/${contractAddress}#code`} target="_blank" rel="noopener noreferrer">View contract</a></i></u></div>
-        <div><u><i><a href={`https://www.alchemy.com/faucets/base-sepolia`} target="_blank" rel="noopener noreferrer">Faucet</a></i></u></div>
+        <div><u><i><a href={`https://explorer.helium.fhenix.zone/address/${contractAddress}#code`} target="_blank" rel="noopener noreferrer">View contract</a></i></u></div>
+        <div><u><i><a href={`https://get-helium.fhenix.zone/`} target="_blank" rel="noopener noreferrer">Faucet</a></i></u></div>
       </div>
     </main>
   );

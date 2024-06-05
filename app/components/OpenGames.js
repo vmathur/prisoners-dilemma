@@ -13,7 +13,7 @@ const colors = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
 const OpenChallenges = ({ address, challenges }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedPlayer, setSelectedPlayer] = useState(null);
-    const { web3 } = useMagic();
+    const { web3, fhenixClient } = useMagic();
   
     const openModal = (playerAddress) => {
       setSelectedPlayer(playerAddress);
@@ -29,10 +29,15 @@ const OpenChallenges = ({ address, challenges }) => {
         if (selectedPlayer) {
           console.log(`Challenge accepted with address: ${selectedPlayer} with choice: ${choice}`);
           if (!web3) return;
-          let move = choice === 'cooperate' ? true : false;
-          const contract = new web3.eth.Contract(abi, contractAddress);
-          const response = await contract.methods.accept(selectedPlayer, move).send({ from: address });
-          console.log(response)
+          try{
+              let move = choice === 'cooperate' ? true : false;
+              const encryptedMove = await fhenixClient.encrypt_bool(move) //todo encrypt the move
+              const contract = new web3.eth.Contract(abi, contractAddress);
+              const response = await contract.methods.accept(selectedPlayer, encryptedMove).send({ from: address, gasPrice: await web3.eth.getGasPrice()});
+              console.log(response)
+          }catch(e){
+            console.log(e)
+          }
           closeModal();
         }
     };
@@ -69,7 +74,7 @@ const OpenChallenges = ({ address, challenges }) => {
                         }}>
                         <span className={styles.playerAddress}>...{challenge.player1.slice(-8)}</span>
                         </Link>
-                        {challenge.player1 === address ? <button className={`${styles.button} ${styles.buttonDisabled}`} disabled={true}>Waiting...</button> : null}
+                        {challenge.player1 === address ? <button className={`${styles.button} ${styles.buttonDisabled}`} disabled={true}>Challenge sent</button> : null}
                         {challenge.player2 === address ? <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button> : null}
 
                     </div>
