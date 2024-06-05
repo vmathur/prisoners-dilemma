@@ -31,12 +31,13 @@ const OpenChallenges = ({ address, challenges }) => {
           if (!web3) return;
           try{
               let move = choice === 'cooperate' ? true : false;
-              const encryptedMove = await fhenixClient.encrypt_bool(move) //todo encrypt the move
+              const encryptedMove = await fhenixClient.encrypt_bool(move)
               const contract = new web3.eth.Contract(abi, contractAddress);
-              const response = await contract.methods.accept(selectedPlayer, encryptedMove).send({ from: address, gasPrice: await web3.eth.getGasPrice()});
+              const response = await contract.methods.accept(selectedPlayer, encryptedMove).send({ from: address, gasPrice: 100000000});
               console.log(response)
           }catch(e){
             console.log(e)
+            console.log('probably a gas issue')
           }
           closeModal();
         }
@@ -50,7 +51,7 @@ const OpenChallenges = ({ address, challenges }) => {
           alignContent: 'center'
         },
     };
-  
+
     return (
         <div className={styles.openGamesContainer}>
             <h2 className={styles.openGamesHeading}>challenges</h2>
@@ -59,20 +60,20 @@ const OpenChallenges = ({ address, challenges }) => {
                     <div key={index} className={styles.openGameCard}>
                         <Link href={{
                             pathname:"/user",
-                            query: { address: challenge.player1 }
+                            query: { address: challenge.player2 }
                         }}>
                         <Avatar
                             size={40}
-                            name={challenge.player1}
+                            name={challenge.player2}
                             variant="beam"
-                            colors={generateColors(challenge.player1)}
+                            colors={generateColors(challenge.player2)}
                         />
                         </Link>
                         <Link href={{
                             pathname:"/user",
-                            query: { address: challenge.player1 }
+                            query: { address: challenge.player2 }
                         }}>
-                        <span className={styles.playerAddress}>...{challenge.player1.slice(-8)}</span>
+                        <span className={styles.playerAddress}>...{challenge.player2.slice(-8)}</span>
                         </Link>
                         {challenge.player1 === address ? <button className={`${styles.button} ${styles.buttonDisabled}`} disabled={true}>Challenge sent</button> : null}
                         {challenge.player2 === address ? <button className={styles.button} onClick={() => openModal(challenge.player1)}>Respond</button> : null}

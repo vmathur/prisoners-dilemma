@@ -29,10 +29,9 @@ const Players = ({ address, players, yourChallengers, playersChallenged }) => {
       if (!web3) return;
       try{
         let move = choice === 'cooperate' ? true : false;
-        const contract = new web3.eth.Contract(abi, contractAddress);
         const encryptedMove = await fhenixClient.encrypt_bool(move) //todo encrypt the move
-        console.log(address)
-        const response = await contract.methods.challenge(selectedPlayer, encryptedMove).send({ from: address, gasPrice: await web3.eth.getGasPrice()});
+        const contract = new web3.eth.Contract(abi, contractAddress);
+        const response = await contract.methods.challenge(selectedPlayer, encryptedMove).send({ from: address, gasPrice: 100000000});
         console.log(response);
       }catch(e){
         console.log(e)
